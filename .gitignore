@@ -36,6 +36,7 @@ MANIFEST
 
 # Model
 *.pth
+word2vec_100
 
 # Result
 *.pkl
