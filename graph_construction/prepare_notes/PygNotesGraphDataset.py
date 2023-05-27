@@ -1,15 +1,12 @@
 from torch_geometric.data import InMemoryDataset
 import os.path as osp
 import torch
-from ConstructDatasetByNotes import *
 from tqdm import tqdm
 import argparse
-import os
-import matplotlib.pyplot as plt
-import seaborn as sns
-from torch_geometric.data import DataLoader
-from torch_geometric.nn import global_add_pool as gap
-import pandas as pd
+import os, sys
+sys.path.append('./data/graph_construction/prepare_notes')
+from ConstructDatasetByNotes import *
+
 
 IMDB_PATH = './data/IMDB_HCUT'  # path to save output hypergraphs
 PRE_PATH = './data/DATA_PRE'
@@ -25,7 +22,7 @@ class PygNotesGraphDataset(InMemoryDataset):
         self.dictionary = dictionary     
         self.data_type = data_type 
         self.pre_path = osp.join(PRE_PATH) 
-        super(PygNotesGraphDataset, self).__init__(self.imdb_path, transform, pre_transform)  
+        super(PygNotesGraphDataset, self).__init__(osp.join(self.imdb_path,f'{self.split}_{self.data_type}'), transform, pre_transform)  
         self.data, self.slices = torch.load(osp.join(self.processed_dir, self.processed_file_names))
 
     @property
@@ -46,6 +43,10 @@ class PygNotesGraphDataset(InMemoryDataset):
     def process(self):
         # construct graph by note list.
         cdbn = ConstructDatasetByNotes(pre_path=self.pre_path, split=self.split, dictionary=self.dictionary, task=self.name) 
+        # create categories.txt
+        if self.split == 'train':
+            cdbn.create_all_cats(path=self.pre_path)
+            print("categories.txt created")
         if self.data_type == 'hyper':
             print("Data Type : hyper")
             data_list = cdbn.construct_hypergraph_datalist()
@@ -70,7 +71,7 @@ class Load_PygNotesGraphDataset(InMemoryDataset):
         self.dictionary = dictionary     
         self.data_type = data_type 
         self.pre_path = osp.join(PRE_PATH) 
-        super(PygNotesGraphDataset, self).__init__(self.imdb_path, transform, pre_transform)  
+        super(Load_PygNotesGraphDataset, self).__init__(self.imdb_path, transform, pre_transform)  
         self.data, self.slices = torch.load(osp.join(self.processed_dir, self.processed_file_names))
 
     @property
@@ -99,7 +100,7 @@ if __name__ == '__main__':
     args, _ = parser.parse_known_args()
     
     # vocabs generated from benchmark codes
-    dictionary = open(os.path.join('/vocab.txt')).read().split()
+    dictionary = open(os.path.join('./data/DATA_RAW/root/vocab.txt')).read().split()
 
     if args.action == 'create':
         PygNotesGraphDataset(name='in-hospital-mortality', split=args.split, tokenizer='word2vec', dictionary=dictionary)

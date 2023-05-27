@@ -22,8 +22,8 @@ pip install -r requirements.txt
 
 ### Prepare Notes 
 ```bash 
-python -m graph_construction.prepare_notes.extract_cleaned_notes
-python -m graph_construction.prepare_notes.create_hyper_df
+python graph_construction/prepare_notes/extract_cleaned_notes.py
+python graph_construction/prepare_notes/create_hyper_df.py
 ```
 <code>extract_cleaned_notes.py</code> cleans clinical notes in <code>data/DATA_RAW/in-hospital-mortality</code>, which results in column "Fixed TEXT" in each csv file. Word2vec token embeddings with 100 dimensions are created and saved in <code>data/DATA_RAW/root/word2vec_100</code>.
 
@@ -31,12 +31,13 @@ python -m graph_construction.prepare_notes.create_hyper_df
 
 ### Construct Multi-level Hypergraphs
 ```bash
-python -m graph_construction.prepare_notes.PygNotesGraphDataset
+python graph_construction/prepare_notes/PygNotesGraphDataset.py --split train
+python graph_construction/prepare_notes/PygNotesGraphDataset.py --split test
 ```
 <code>PygNotesGraphDataset.py</code> creates multi-level hypergraphs with cutoff in <code>data/IMDB_HCUT/in-hospital-mortality</code>. 
 
 
 ### Model Train
 ```bash
-python -m tmhgnn.train
+python tmhgnn/train.py
 ```

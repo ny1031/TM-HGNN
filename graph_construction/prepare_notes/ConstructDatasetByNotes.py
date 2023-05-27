@@ -7,9 +7,8 @@ from scipy import sparse
 import torch, sys
 from torch_geometric.data import Data
 pd.set_option('display.max_columns', None)
-import seaborn as sns
-import matplotlib.pyplot as plt
-import os.path as osp, os
+import os.path as osp
+import os
 from tqdm import tqdm
 from gensim.models import Word2Vec
 
@@ -66,7 +65,7 @@ def generate_patient_graph(df):
 
 def load_word2vec_embeddings():
     # word2vec pretrained embeddings
-    w2v_path = '/word2vec_100'
+    w2v_path = './data/DATA_RAW/root/word2vec_100'
     print('import pretrained word representation from {}...'.format(w2v_path))
     word_embeddings = Word2Vec.load(osp.join(w2v_path)).wv
     return word_embeddings
@@ -79,8 +78,8 @@ class ConstructDatasetByNotes():
         self.task = task        
         super(ConstructDatasetByNotes).__init__()
         self.labels = self.get_labels(split)          
-        self.cat_path = '/categories.txt'
-        self.all_cats = [a.strip() for a in open(self.cat_path).readlines()]   # Nutrition ~ Respiratory
+        self.cat_path = osp.join(self.pre_path, 'categories.txt')
+        # self.all_cats = [a.strip() for a in open(self.cat_path).readlines()]   # Nutrition ~ Respiratory
         
         '''
         categories.txt: (total 14)
@@ -103,7 +102,7 @@ class ConstructDatasetByNotes():
         '''
         
     def get_labels(self, split):
-        label_patients = pd.read_csv(osp.join(self.pre_path, self.task, split+'_cooc', 'listfile.csv'), sep=',', header=0)
+        label_patients = pd.read_csv(osp.join(self.pre_path, self.task, split+'_hyper', 'listfile.csv'), sep=',', header=0)
         label_patients['name'] = label_patients.apply(lambda x: str(x['patient'])+'_'+x['episode'], axis=1)    
         label_patients = label_patients.loc[:, ['name', 'y_true']]
         return label_patients          
@@ -137,10 +136,10 @@ class ConstructDatasetByNotes():
     def create_all_cats(self, path):
         all_cats = []
         for split in ['train', 'test']:
-            cooc_path = osp.join(self.pre_path, self.task, split+'_cooc')
-            patients = list(filter(lambda x: x in os.listdir(cooc_path), list(self.labels['name'])))  
-            for patient in tqdm(patients[:], desc='Iterating over patients in {}_cooc'.format(split)): 
-                p_df = pd.read_csv(osp.join(cooc_path, patient), sep='\t', header=0)
+            hyper_path = osp.join(self.pre_path, self.task, split+'_hyper')
+            patients = list(filter(lambda x: x in os.listdir(hyper_path), list(self.labels['name'])))  
+            for patient in tqdm(patients[:], desc='Iterating over patients in {}_hyper'.format(split)): 
+                p_df = pd.read_csv(osp.join(hyper_path, patient), sep='\t', header=0)
                 all_cats += p_df['CATEGORY'].tolist()
         all_cats = list(set(all_cats))
         f = open(f'{path}/categories.txt', 'w')
@@ -182,6 +181,7 @@ class ConstructDatasetByNotes():
         hyper_path = osp.join(self.pre_path + '/' + self.task + '/', self.split + '_hyper/')
         patients = list(filter(lambda x: x in os.listdir(hyper_path), list(
             self.labels['name'])))  
+        list_all_cats = [a.strip() for a in open(self.cat_path).readlines()]   # Nutrition ~ Respiratory
         # episode file names into list
         print('<Patient list generation done>')
         Data_list = []
@@ -241,7 +241,7 @@ class ConstructDatasetByNotes():
                     G_n.remove_nodes_from(cut_300)
 
                     # note ids to node attributes
-                    cat_id = self.all_cats.index(n_df['CATEGORY'].values[0].rstrip())  # 14 categories 
+                    cat_id = list_all_cats.index(n_df['CATEGORY'].values[0].rstrip())  # 14 categories 
                     note_id = int(n_df['note_id'].values[0])
                     attrs = {}
                     for node in G_n:

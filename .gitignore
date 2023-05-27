@@ -32,7 +32,13 @@ MANIFEST
 *.pt
 *.txt
 # except listfile and categories.txt
-!listfile.csv
+# !listfile.csv
+
+# Model
+*.pth
+
+# Result
+*.pkl
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

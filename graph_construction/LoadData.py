@@ -1,5 +1,5 @@
 import sys, os
-sys.path.append('./prepare_notes/')
+sys.path.append('./graph_construction/prepare_notes/')
 from PygNotesGraphDataset import Load_PygNotesGraphDataset as PNGD
 from embedding_utils import *
 from torch_geometric.data import DataLoader
@@ -15,7 +15,7 @@ class LoadPaitentData():
         self.name = name
         self.type = type
         self.data_type = data_type
-        self.dictionary = open(os.path.join('vocab.txt')).read().split()
+        self.dictionary = open(os.path.join('./data/DATA_RAW','root','vocab.txt')).read().split()
         self.tokenizer = tokenizer
 
         super(LoadPaitentData, self).__init__()
@@ -23,7 +23,7 @@ class LoadPaitentData():
         self.val_set = []
         self.test_set = []
 
-    def split_train_val_data(self, seed, ratio, tr_split):
+    def split_train_val_data(self, seed, ratio):
         np.random.seed(seed)
 
         cs = pd.DataFrame(self.train_set.data.y_p.tolist())[0].value_counts().to_dict()   
@@ -38,7 +38,7 @@ class LoadPaitentData():
         self.train_set = self.train_set[train_id[:n_train]]
         return self.train_set, self.val_set
 
-    def get_train_test(self, batch_size, seed, ratio=0.8, tr_split=1):
+    def get_train_test(self, batch_size, seed, ratio=0.8):
 
         print('load test data...')
         self.test_set = PNGD(name=self.name, split='test', tokenizer=self.tokenizer, dictionary=self.dictionary, data_type=self.data_type, transform=Handle_data(self.type, self.tokenizer))
@@ -47,7 +47,7 @@ class LoadPaitentData():
         self.train_set = PNGD(name=self.name, split='train', tokenizer=self.tokenizer, dictionary=self.dictionary, data_type=self.data_type, transform=Handle_data(self.type, self.tokenizer))
         print('Train Dataset: {}'.format(len(self.train_set)))
 
-        self.train_set, self.val_set = self.split_train_val_data(seed, ratio, tr_split)
+        self.train_set, self.val_set = self.split_train_val_data(seed, ratio)
         
         assert self.val_set.data.y_p.unique().size(0) == \
                self.train_set.data.y_p.unique().size(0) == \

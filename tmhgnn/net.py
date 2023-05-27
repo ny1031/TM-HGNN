@@ -1,9 +1,9 @@
 import torch
 import torch.nn
-from torch.nn import Linear, Embedding
+from torch.nn import Linear
 import torch.nn.functional as F
-from torch_geometric.nn import GCNConv, GATConv, GATv2Conv, GINConv
-from torch_geometric.nn import global_mean_pool, global_add_pool, global_max_pool
+from torch_geometric.nn import GCNConv
+from torch_geometric.nn import global_mean_pool
 from torch.nn import Sequential, Linear, ReLU
 
 
@@ -12,7 +12,7 @@ from torch.nn import Sequential, Linear, ReLU
 ###################
 
 class TM_HGNN(torch.nn.Module):
-    def __init__(self, num_features, hidden_channels, num_class):  
+    def __init__(self, num_features, hidden_channels):  
         super(TM_HGNN, self).__init__()
         self.conv1 = GCNConv(num_features, hidden_channels)
         self.conv2 = GCNConv(hidden_channels, hidden_channels)

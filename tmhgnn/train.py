@@ -159,9 +159,9 @@ if __name__ == '__main__':
     
     # Multi Hyperedge
     if args.dload == 'multi_hyper':
+        sys.path.append('./graph_construction/')
         from LoadData import * #LoadPaitentData
         print('LoadData => LoadPaitentData imported')
-
     else:
         raise ValueError(f'Unknown dataloader: {args.dload}')
         
@@ -170,7 +170,7 @@ if __name__ == '__main__':
     train_loader, val_loader, test_loader, n_class = loader.get_train_test(batch_size=args.bsz, seed=args.seed)
     
     # Define model            
-    model = getattr(networks, args.model)(num_features=args.node_features, hidden_channels=args.hidden_channels*args.heads_1, num_class=args.num_class)        
+    model = getattr(networks, args.model)(num_features=args.node_features, hidden_channels=args.hidden_channels*args.heads_1)        
 
     model.cuda() # Assume that GPU is available
     

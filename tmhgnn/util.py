@@ -3,7 +3,7 @@ import torch
 import random
 import numpy as np
 
-def seed_everything(seed=42):
+def seed_everything(seed=50):
     random.seed(seed)
     np.random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
