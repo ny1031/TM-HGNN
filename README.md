@@ -5,11 +5,12 @@
 
 ## Requirements
 
-- CUDA=11.2
+- CUDA=11.3
 - cuDNN=8.2.0
-- python=3.10.4
-- pandas=1.5.3
-- 
+- python=3.9.12
+- pandas=1.4.2
+- torch=1.11.0
+- torch_geometric=2.1.0
 
 ## Usage
 We follow [MIMIC-III Benchmark (Harutyunyan et al.)](https://www.nature.com/articles/s41597-019-0103-9) for preprocess clinical notes.
