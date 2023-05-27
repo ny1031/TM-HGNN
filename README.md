@@ -16,10 +16,10 @@
 We follow [MIMIC-III Benchmark (Harutyunyan et al.)](https://www.nature.com/articles/s41597-019-0103-9) for preprocess clinical notes.
 The preprocessed NOTEEVENTS data for <code>in-hospital-mortality</code> should be in <code>data/DATA_RAW/in-hospital-mortality</code>, divided into two folders (<code>train_note</code> and <code>test_note</code>).
 
-### Setup
+<!-- ### Setup
 ```bash
 pip install -r requirements.txt
-```
+``` -->
 
 ### Prepare Notes 
 ```bash 
