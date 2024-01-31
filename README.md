@@ -1,6 +1,6 @@
 # TM-HGNN
 
-[ACL 2023] Clinical Note Owns its Hierarchy: Multi-Level Hypergraph Neural Networks for Patient-Level Representation Learning [Paper](https://aclanthology.org/2023.acl-long.305/)
+[ACL 2023] Clinical Note Owns its Hierarchy: Multi-Level Hypergraph Neural Networks for Patient-Level Representation Learning [[Paper]](https://aclanthology.org/2023.acl-long.305/)
 ![The proposed framework](img/tmhgnn_overview.png)
 
 ## Requirements
