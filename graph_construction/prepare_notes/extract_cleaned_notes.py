@@ -100,7 +100,7 @@ def preprocess_mimic(text):
     """
     for sec in split_heading(clean_text(text)):
         for sent in sent_tokenize(sec):
-            sent = re.sub(r'\[\*\*(.*?)\*\*\]|[_\,\d\*:~=\.\-\+\\/\"\'^&]+', ' ', sent) # re clean! added by enhwa.
+            sent = re.sub(r'\[\*\*(.*?)\*\*\]|[_\,\d\*:~=\.\-\+\\/\"\'^&]+', ' ', sent) 
             text = ' '.join([stemmer.lemmatize(word) for word in word_tokenize(
                 sent
             )])
